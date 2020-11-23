@@ -2,55 +2,66 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
+using UnityEditor;
 public class DrawLineManager : MonoBehaviour
 {
-
     public InputDeviceCharacteristics controllerCharacteristics;
-    
-
+    public Material lMat;
     private InputDevice targetDevice;
-    private LineRenderer currLine;
-
+    private DrawingToMesh currLine;
     private int counter = 0;
+
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("starting DrawLineManager.cs");
+        TryInitialize();
+    }
+
+    void TryInitialize()
+    {
         List<InputDevice> devices = new List<InputDevice>();
         InputDevices.GetDevicesWithCharacteristics(controllerCharacteristics, devices);
 
         if (devices.Count > 0)
         {
             targetDevice = devices[0];
-
             Debug.Log(targetDevice.name);
         }
-        else
-            Debug.Log("no devices found");
     }
 
     // Update is called once per frame
     void Update()
     {
-        bool success = targetDevice.TryGetFeatureValue(CommonUsages.triggerButton, out bool triggerButton);
-        if (success && triggerButton && counter == 0)
+        if (!targetDevice.isValid)
         {
-            Debug.Log("create new object");
-            GameObject go = new GameObject();
-            currLine = go.AddComponent<LineRenderer>();
-            currLine.startWidth = .1f;
-            currLine.endWidth = .1f;
-            counter++;
+            TryInitialize();
         }
-        else if (success && triggerButton)
-        {
-            currLine.positionCount = counter;
-           
+        else {
+            bool success = targetDevice.TryGetFeatureValue(CommonUsages.triggerButton, out bool triggerButton);
+            if (success && triggerButton && counter == 0)
+            {
+                Debug.Log("create new object");
+                GameObject go = new GameObject();
+                go.AddComponent<MeshFilter>();
+                go.AddComponent<MeshRenderer>();
+                currLine = go.AddComponent<DrawingToMesh>();
+                currLine.setWidth(.05f);
+                currLine.lmat = new Material(lMat);
+                currLine.lmat.color = ColorManager.Instance.GetCurrentColor();
 
-            currLine.SetPosition(counter-1, this.transform.position);
-            counter++;
+                counter++;
+            }
+            else if (success && triggerButton)
+            {
+                currLine.AddPoint(this.transform.position);
+                counter++;
+            }
+            else if (counter > 0)
+            {
+                counter = 0;
+            }
+
         }
-        else
-            counter = 0;
+
     }
 }
