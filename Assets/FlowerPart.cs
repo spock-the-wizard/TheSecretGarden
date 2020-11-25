@@ -6,16 +6,14 @@ using UnityEngine;
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(MeshFilter))]
 
-public class LineMeshRenderer : MonoBehaviour
+public class FlowerPart : MonoBehaviour
 {
     public Material lmat;
 
-    private Mesh ml;
+    public Mesh ml;
 
     private Vector3 s;
-
     private float lineSize = .1f;
-
     private bool firstQuad = true;
 
     void Start()
@@ -278,4 +276,5 @@ public class LineMeshRenderer : MonoBehaviour
 
         return nvs;
     }
+
 }

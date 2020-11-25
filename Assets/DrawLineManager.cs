@@ -9,7 +9,7 @@ public class DrawLineManager : MonoBehaviour
     public Material lMat;
     public GameObject ptr;
     private InputDevice targetDevice;
-    private LineMeshRenderer currLine;
+    private FlowerPart currLine;
     private int counter = 0;
 
     
@@ -31,9 +31,42 @@ public class DrawLineManager : MonoBehaviour
             targetDevice = devices[0];
             Debug.Log(targetDevice.name);
         }
-        
+
+        Mesh m = SaveSystem.LoadFlowerPartData("haha1");
+        GameObject newobj = createFlowerPart(m);
+
     }
 
+    //reconstruct flower part from mesh 
+    GameObject createFlowerPart(Mesh m)
+    {
+        GameObject flwprt = new GameObject(m.name);
+        flwprt.AddComponent<MeshFilter>().mesh = m;
+        flwprt.AddComponent<MeshRenderer>();
+        FlowerPart pt = flwprt.AddComponent<FlowerPart>();
+        pt.ml = m;
+        pt.lmat = new Material(lMat);
+        if(m.colors.Length!=0)
+            pt.lmat.color = pt.ml.colors[0];
+
+        return flwprt;
+    }
+
+    // create new flower part from scratch
+    GameObject createFlowerPart(string name)
+    {
+        GameObject flwprt = new GameObject(name);
+        flwprt.AddComponent<MeshFilter>();
+        flwprt.AddComponent<MeshRenderer>();
+        FlowerPart pt = flwprt.AddComponent<FlowerPart>();
+        pt.setWidth(.3f);
+        pt.ml.name = name;
+        pt.lmat = new Material(lMat);
+     
+        pt.lmat.color = ColorManager.Instance.GetCurrentColor();
+        
+        return flwprt;
+    }
     // Update is called once per frame
     void Update()
     {
@@ -50,8 +83,9 @@ public class DrawLineManager : MonoBehaviour
                     GameObject child = new GameObject("Line");
                     child.AddComponent<MeshFilter>();
                     child.AddComponent<MeshRenderer>();
-                    currLine = child.AddComponent<LineMeshRenderer>();
+                    currLine = child.AddComponent<FlowerPart>();
                     currLine.setWidth(.03f);
+                    currLine.name = "haha1";
                     currLine.lmat = new Material(lMat);
                     currLine.lmat.color = ColorManager.Instance.GetCurrentColor();
 
@@ -63,14 +97,16 @@ public class DrawLineManager : MonoBehaviour
                 {
                     Quaternion offset = new Quaternion(0.2f, 0.1f, -0.1f, 1.0f);
                     currLine.AddPoint(ptr.transform.position, offset * quaternion);
-                    //currLine.AddPoint(this.transform.position);
                     counter++;
                 }
-                else if ( counter > 0)
+                else if (counter > 0)
                 {
+                   //SaveSystem.SaveFlowerPart(currLine);
+                    //Debug.Log(currLine.ml.name);
                     counter = 0;
                     currLine = null;
                 }
+
             }
 
         }
