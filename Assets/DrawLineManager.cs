@@ -7,26 +7,31 @@ public class DrawLineManager : MonoBehaviour
 {
     public InputDeviceCharacteristics controllerCharacteristics;
     public Material lMat;
+    public GameObject ptr;
     private InputDevice targetDevice;
-    private DrawingToMesh currLine;
+    private LineMeshRenderer currLine;
     private int counter = 0;
 
+    
+    private GameObject flower;
     // Start is called before the first frame update
     void Start()
     {
         TryInitialize();
+        flower = new GameObject("TestFlower");
     }
 
     void TryInitialize()
     {
         List<InputDevice> devices = new List<InputDevice>();
         InputDevices.GetDevicesWithCharacteristics(controllerCharacteristics, devices);
-
+       
         if (devices.Count > 0)
         {
             targetDevice = devices[0];
             Debug.Log(targetDevice.name);
         }
+        
     }
 
     // Update is called once per frame
@@ -37,28 +42,35 @@ public class DrawLineManager : MonoBehaviour
             TryInitialize();
         }
         else {
-            bool success = targetDevice.TryGetFeatureValue(CommonUsages.triggerButton, out bool triggerButton);
-            if (success && triggerButton && counter == 0)
+            if(targetDevice.TryGetFeatureValue(CommonUsages.triggerButton, out bool triggerButton) && targetDevice.TryGetFeatureValue(CommonUsages.deviceRotation, out Quaternion quaternion))
             {
-                Debug.Log("create new object");
-                GameObject go = new GameObject();
-                go.AddComponent<MeshFilter>();
-                go.AddComponent<MeshRenderer>();
-                currLine = go.AddComponent<DrawingToMesh>();
-                currLine.setWidth(.05f);
-                currLine.lmat = new Material(lMat);
-                currLine.lmat.color = ColorManager.Instance.GetCurrentColor();
+                if (triggerButton && counter == 0)
+                {
+                    Debug.Log("Adding Lines to Flower GameObject");
+                    GameObject child = new GameObject("Line");
+                    child.AddComponent<MeshFilter>();
+                    child.AddComponent<MeshRenderer>();
+                    currLine = child.AddComponent<LineMeshRenderer>();
+                    currLine.setWidth(.03f);
+                    currLine.lmat = new Material(lMat);
+                    currLine.lmat.color = ColorManager.Instance.GetCurrentColor();
 
-                counter++;
-            }
-            else if (success && triggerButton)
-            {
-                currLine.AddPoint(this.transform.position);
-                counter++;
-            }
-            else if (counter > 0)
-            {
-                counter = 0;
+                    child.transform.parent = flower.transform;
+
+                    counter++;
+                }
+                else if (triggerButton)
+                {
+                    Quaternion offset = new Quaternion(0.2f, 0.1f, -0.1f, 1.0f);
+                    currLine.AddPoint(ptr.transform.position, offset * quaternion);
+                    //currLine.AddPoint(this.transform.position);
+                    counter++;
+                }
+                else if ( counter > 0)
+                {
+                    counter = 0;
+                    currLine = null;
+                }
             }
 
         }
