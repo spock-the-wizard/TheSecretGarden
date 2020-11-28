@@ -26,12 +26,13 @@ public class FlowerData
     public Flower getFlower(Material mat)
     {
         GameObject obj = new GameObject(flowerName);
+        obj.tag = "Flower";
         BoxCollider boxC = obj.AddComponent<BoxCollider>();
         obj.AddComponent<XRGrabInteractable>();
         Flower flower = obj.AddComponent<Flower>();
         flower.flowerName = flowerName;
-
-        
+        flower.position = new Vector3(position[0], position[1],position[2]);
+        flower.text = text;
         for(int i=0;i<partCount;i++)
         {
             string NName = flowerName + "."+i.ToString();
@@ -58,6 +59,7 @@ public class FlowerData
         obj.GetComponent<Rigidbody>().freezeRotation = true;
         obj.GetComponent<Rigidbody>().useGravity = true;
         obj.GetComponent<Rigidbody>().mass = 0.5f;
+
         return flower;
     }
 

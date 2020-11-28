@@ -580,7 +580,6 @@ MonoBehaviour:
   material: {fileID: 0}
   ptr: {fileID: 8636606887984847819}
   pen: {fileID: 4112031441921725143}
-  flowerCnt: 0
   drawMode: 1
 --- !u!1 &3709940039423092141
 GameObject:

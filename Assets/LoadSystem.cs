@@ -7,11 +7,19 @@ using UnityEngine.SceneManagement;
 public class LoadSystem : MonoBehaviour
 {
     public Material material;
-    public int flowerCnt;
     private void Start()
     {
-       GameObject flw = LoadFlower("test0");
-        flw.transform.Translate(-7, 3, -19);
+        int flwNum = getFlowerNum();
+        for(int i = 0; i < flwNum; i++)
+        {
+            GameObject flw = LoadFlower("test" + i.ToString());
+            if (flw != null)
+            {
+                Debug.Log("translate" + flw.GetComponent<Flower>().position);
+                flw.transform.Translate(flw.GetComponent<Flower>().position);
+                
+            }
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -31,13 +39,14 @@ public class LoadSystem : MonoBehaviour
             FileStream stream = new FileStream(path, FileMode.Open);
 
             FlowerPartData data = (FlowerPartData)formatter.Deserialize(stream);
+            stream.Close(); 
             FlowerPart part = data.getFlowerPart(mat);
             Debug.Log("Loading Part " + name);
             return part.gameObject;
         }
         else
         {
-            Debug.LogError("save file not found");
+            Debug.Log("save file " + path + " not found");
             return null;
         }
 
@@ -53,13 +62,35 @@ public class LoadSystem : MonoBehaviour
             FileStream stream = new FileStream(path, FileMode.Open);
 
             FlowerData data = (FlowerData)formatter.Deserialize(stream);
+            stream.Close();
             Debug.Log("Loading Flower " + name);
             return data.getFlower(material).gameObject;
         }
         else
         {
-            Debug.LogError("save file not found");
+            Debug.Log("save file "+path+" not found");
             return null;
+        }
+    }
+
+    public int getFlowerNum()
+    {
+        string path = Application.persistentDataPath + "/State.dat";
+
+        if (File.Exists(path))
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream = new FileStream(path, FileMode.Open);
+
+            StateData data = (StateData)formatter.Deserialize(stream);
+            stream.Close();
+            int cnt = data.GetFlowerNum();
+
+            return cnt;
+        }
+        else
+        {
+            return 0;
         }
     }
 }

@@ -17,11 +17,10 @@ public class DrawLineManager : MonoBehaviour
     private static int count = 0;
     //private DestroyFlower destroyFlowerScript;
     private Flower flower;
-    public int flowerCnt;
+    private int nextFlowerIndex;
     public bool drawMode = true;
 
 
-    private float lowest_y = 100;
 
    // public GameObject flowerObject; //current flower you are drawing
     // Start is called before the first frame update
@@ -45,7 +44,7 @@ public class DrawLineManager : MonoBehaviour
             Debug.Log(targetDevice.name);
         }
 
-
+        nextFlowerIndex = SaveSystem.getValidIndex();
     }
 
    
@@ -101,8 +100,10 @@ public class DrawLineManager : MonoBehaviour
                     //destroyFlowerScript.enabled = false;
                     if (triggerButton && counter == 0)
                     {
-                        if(flower==null)
-                            flower = Flower.createFlowerObject(count).GetComponent<Flower>();
+                        if (flower == null)
+                        {
+                            flower = Flower.createFlowerObject(nextFlowerIndex).GetComponent<Flower>();
+                        }
                         int index = flower.parts.Count;
                         GameObject partObj =  FlowerPart.createPartObject(flower.flowerName+"."+index.ToString(), material);//FlowerPart(flower.flowerName+index.ToString());
                         partObj.transform.parent = flower.gameObject.transform;
