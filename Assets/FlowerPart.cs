@@ -8,6 +8,7 @@ using UnityEngine;
 
 public class FlowerPart : MonoBehaviour
 {
+    public string partName;
     public Material lmat;
 
     public Mesh ml;
@@ -29,7 +30,7 @@ public class FlowerPart : MonoBehaviour
     void Start()
     {
         ml =GetComponent<MeshFilter>().mesh;
-        GetComponent<MeshCollider>().sharedMesh = ml;
+        //GetComponent<MeshCollider>().sharedMesh = ml;
         GetComponent<MeshRenderer>().material = lmat;
     }
 
@@ -288,6 +289,8 @@ public class FlowerPart : MonoBehaviour
         return nvs;
     }
 
+
+    /*
     //reconstruct flower part from mesh 
     public static GameObject createFlowerPart(Mesh m, Material mat)
     {
@@ -303,5 +306,21 @@ public class FlowerPart : MonoBehaviour
             pt.lmat.color = m.colors[0];
 
         return flwprt;
+    }*/
+
+
+    // Creating part objects from scratch
+    public static GameObject createPartObject(string name, Material mat)
+    {
+        GameObject obj = new GameObject(name);
+        obj.AddComponent<MeshFilter>();
+        obj.AddComponent<MeshRenderer>();
+        FlowerPart part = obj.AddComponent<FlowerPart>();
+        part.partName = name;
+        part.setWidth(.03f);
+        part.lmat = new Material(mat);
+        part.lmat.color = ColorManager.Instance.GetCurrentColor();
+
+        return obj;
     }
 }

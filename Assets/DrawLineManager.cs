@@ -7,26 +7,31 @@ using UnityEditor;
 public class DrawLineManager : MonoBehaviour
 {
     public InputDeviceCharacteristics controllerCharacteristics;
-    public Material lMat;
+    public Material material;
     public GameObject ptr;
     public GameObject pen;
     private InputDevice targetDevice;
-    private FlowerPart curPart;
+    private FlowerPart currentPart;
     private int counter = 0;
     private int gripCount = 0;
     private static int count = 0;
-    private DestroyFlower destroyFlowerScript;
+    //private DestroyFlower destroyFlowerScript;
     private Flower flower;
-
+    public int flowerCnt;
     public bool drawMode = true;
-    public GameObject flowerObject; //current flower you are drawing
-    private GameObject currentPartObject;
+
+
+    private float lowest_y = 100;
+
+   // public GameObject flowerObject; //current flower you are drawing
     // Start is called before the first frame update
     void Start()
     {
         TryInitialize();
-        flower = flowerObject.AddComponent<Flower>();
-        flower.flowerName = "testFlower11";
+
+        
+        //flower = flowerObject.AddComponent<Flower>();
+        //flower.flowerName = "testFlower11";
     }
 
     void TryInitialize()
@@ -40,15 +45,11 @@ public class DrawLineManager : MonoBehaviour
             Debug.Log(targetDevice.name);
         }
 
-        destroyFlowerScript = ptr.GetComponent<DestroyFlower>();
-        destroyFlowerScript.enabled = false;
-
-        //Mesh m = SaveSystem.LoadFlowerPartData("haha1");
-        //GameObject newobj = createFlowerPart(m);
 
     }
 
    
+    /*
     // create new flower part from scratch
     GameObject createFlowerPart(string name)
     {
@@ -72,7 +73,7 @@ public class DrawLineManager : MonoBehaviour
         curPart.lmat.color = ColorManager.Instance.GetCurrentColor();
         
         return flwprt;
-    }
+    }*/
     // Update is called once per frame
     void Update()
     {
@@ -97,33 +98,29 @@ public class DrawLineManager : MonoBehaviour
                     {
                     gripCount = 0;
                     //Debug.Log("Entering DRAW mode");
-                        destroyFlowerScript.enabled = false;
-                        if (triggerButton && counter == 0)
-                        {
+                    //destroyFlowerScript.enabled = false;
+                    if (triggerButton && counter == 0)
+                    {
+                        if(flower==null)
+                            flower = Flower.createFlowerObject(count).GetComponent<Flower>();
                         int index = flower.parts.Count;
-                            currentPartObject = createFlowerPart(flower.flowerName+index.ToString());
-
-                            currentPartObject.transform.parent = flowerObject.transform;
-
-                            counter++;
-                        }
-                        else if (triggerButton)
-                        {
-                            Quaternion offset = pen.transform.rotation;
-                            curPart.AddPoint(ptr.transform.position, offset);
-                            counter++;
-                        }
-                        else if (counter > 0)
-                        {
-                            //Debug.Log("Adding to flower object part " + curPart.ml.name);
-                            flower.parts.Add(currentPartObject);
-                            // add part to current flower
-                            
-                            //SaveSystem.SaveFlowerPart(currLine);
-                            //Debug.Log(currLine.ml.name);
-                            counter = 0;
-                            curPart = null;
-                        }
+                        GameObject partObj =  FlowerPart.createPartObject(flower.flowerName+"."+index.ToString(), material);//FlowerPart(flower.flowerName+index.ToString());
+                        partObj.transform.parent = flower.gameObject.transform;
+                        currentPart = partObj.GetComponent<FlowerPart>();
+                        counter++;
+                    }
+                    else if (triggerButton)
+                    {
+                        currentPart.AddPoint(ptr.transform.position, pen.transform.rotation);
+                      
+                        counter++;
+                    }
+                    else if (counter > 0)
+                    {
+                        flower.parts.Add(currentPart.gameObject);
+                        counter = 0;
+                        currentPart = null;
+                    }
 
                     }
                     else //eraseMode

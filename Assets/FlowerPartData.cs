@@ -22,7 +22,7 @@ public class FlowerPartData
     {
         Mesh m = flowerPart.ml;
 
-        name = m.name;
+        name = flowerPart.partName;
 
         vertices = new float[m.vertexCount * 3];
         for (int i = 0; i < m.vertexCount; i++)
@@ -53,16 +53,17 @@ public class FlowerPartData
 
     }
 
+    // restoring flower part from DB
     public FlowerPart getFlowerPart(Material mat)
     {
         GameObject obj = new GameObject(name);
         obj.AddComponent<MeshFilter>();
         obj.AddComponent<MeshRenderer>();
-        obj.AddComponent<MeshCollider>();
+        //obj.AddComponent<MeshCollider>().convex = true;
         FlowerPart part = obj.AddComponent<FlowerPart>();
+        part.partName = name;
 
         Mesh m = new Mesh();
-        m.name = name;
 
         List<Vector3> verticesList = new List<Vector3>();
         for (int i = 0; i < vertices.Length / 3; i++)
