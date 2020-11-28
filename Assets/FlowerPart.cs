@@ -11,14 +11,25 @@ public class FlowerPart : MonoBehaviour
     public Material lmat;
 
     public Mesh ml;
-
+    
     private Vector3 s;
     private float lineSize = .1f;
     private bool firstQuad = true;
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("caught something");
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("triggered");
+        Debug.Log(other.gameObject.name);
+    }
     void Start()
     {
-        ml = GetComponent<MeshFilter>().mesh;
+        ml =GetComponent<MeshFilter>().mesh;
+        GetComponent<MeshCollider>().sharedMesh = ml;
         GetComponent<MeshRenderer>().material = lmat;
     }
 
@@ -33,7 +44,7 @@ public class FlowerPart : MonoBehaviour
         Vector3[] q = new Vector3[2];
         float w = lineSize / 2;
         // get right vector for controller
-        Vector3 right = rot * Vector3.right;
+        Vector3 right = rot * Vector3.forward;
         right.Normalize();
         q[0] = transform.InverseTransformPoint(s + right * w);
         q[1] = transform.InverseTransformPoint(s + right * -w);
@@ -277,4 +288,20 @@ public class FlowerPart : MonoBehaviour
         return nvs;
     }
 
+    //reconstruct flower part from mesh 
+    public static GameObject createFlowerPart(Mesh m, Material mat)
+    {
+        GameObject flwprt = new GameObject(m.name);
+        flwprt.AddComponent<MeshFilter>().mesh = m;
+        flwprt.AddComponent<MeshRenderer>();
+        MeshCollider mshC = flwprt.AddComponent<MeshCollider>();
+        FlowerPart pt = flwprt.AddComponent<FlowerPart>();
+        pt.ml = m;
+        pt.lmat = new Material(mat);
+        Debug.Log(m.colors[0]);
+        if (m.colors.Length != 0)
+            pt.lmat.color = m.colors[0];
+
+        return flwprt;
+    }
 }

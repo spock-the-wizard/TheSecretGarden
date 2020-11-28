@@ -21,7 +21,7 @@ public class ColorManager : MonoBehaviour
     }
     void OnColorChange(HSBColor color)
     {
-        Debug.Log("color is " + color);
+        //Debug.Log("color is " + color);
         this.color = color.ToColor();
     }
     public Color GetCurrentColor()

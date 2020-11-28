@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Flower : MonoBehaviour
 {
+    public string flowerName;
+    public Time time;
+    public List<GameObject> parts = new List<GameObject>();
     // Start is called before the first frame update
     void Start()
     {

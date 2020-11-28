@@ -15,7 +15,7 @@ public class FlowerPartData
     public int[] triangles;
     [SerializeField]
     public float[] uv;
-   // [SerializeField]
+    // [SerializeField]
     //public float[] normals;
 
     public FlowerPartData(FlowerPart flowerPart)
@@ -25,7 +25,7 @@ public class FlowerPartData
         name = m.name;
 
         vertices = new float[m.vertexCount * 3];
-        for(int i=0;i<m.vertexCount;i++)
+        for (int i = 0; i < m.vertexCount; i++)
         {
             vertices[i * 3] = m.vertices[i].x;
             vertices[i * 3 + 1] = m.vertices[i].y;
@@ -49,10 +49,86 @@ public class FlowerPartData
             uv[i * 2 + 1] = m.uv[i].y;
         }
 
-   
+
 
     }
 
+    public FlowerPart getFlowerPart(Material mat)
+    {
+        GameObject obj = new GameObject(name);
+        obj.AddComponent<MeshFilter>();
+        obj.AddComponent<MeshRenderer>();
+        obj.AddComponent<MeshCollider>();
+        FlowerPart part = obj.AddComponent<FlowerPart>();
+
+        Mesh m = new Mesh();
+        m.name = name;
+
+        List<Vector3> verticesList = new List<Vector3>();
+        for (int i = 0; i < vertices.Length / 3; i++)
+        {
+            verticesList.Add(new Vector3(
+                    vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]
+                ));
+        }
+        m.SetVertices(verticesList);
+        m.triangles = triangles;
+        List<Vector2> uvList = new List<Vector2>();
+        for (int i = 0; i < uv.Length / 2; i++)
+        {
+            uvList.Add(new Vector2(
+                    uv[i * 2], uv[i * 2 + 1]
+                ));
+        }
+        m.SetUVs(0, uvList);
+        m.RecalculateNormals();
+
+        obj.GetComponent<MeshFilter>().mesh = m;
+        part.ml = m;
+        part.lmat = new Material(mat);
+        part.lmat.color = new Color(color[0], color[1], color[2]);
+
+        return part;
+    }
+
+
+    /*
+    public GameObject getdFlowerPart(Material mat)
+    {
+        GameObject newFlowerPart = new GameObject(name);
+        newFlowerPart.AddComponent<MeshFilter>();
+        newFlowerPart.AddComponent<MeshRenderer>();
+        FlowerPart pt = newFlowerPart.AddComponent<FlowerPart>();
+        
+        Mesh m = new Mesh();
+        m.name = name;
+
+        List<Vector3> verticesList = new List<Vector3>();
+        for (int i = 0; i < vertices.Length / 3; i++)
+        {
+            verticesList.Add(new Vector3(
+                    vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]
+                ));
+        }
+        m.SetVertices(verticesList);
+        m.triangles = triangles;
+        List<Vector2> uvList = new List<Vector2>();
+        for (int i = 0; i < uv.Length / 2; i++)
+        {
+            uvList.Add(new Vector2(
+                    uv[i * 2], uv[i * 2 + 1]
+                ));
+        }
+        m.SetUVs(0, uvList);
+        m.RecalculateNormals();
+
+        pt.ml = m;
+        pt.lmat = new Material(mat);
+        pt.lmat.color = new Color(color[0], color[1], color[2]);
+
+        return newFlowerPart;
+
+    }
     public Mesh getFlowerPartMesh()
     {
         Mesh m = new Mesh();
@@ -85,6 +161,5 @@ public class FlowerPartData
 
         m.RecalculateNormals();
         return m;
-    }
+    }*/
 }
-
