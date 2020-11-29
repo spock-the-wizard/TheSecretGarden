@@ -2,12 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
+using UnityEngine.XR.Interaction.Toolkit;
 public class Draggable : MonoBehaviour
 {
 
     public InputDeviceCharacteristics controllerCharacteristics;
 
     private InputDevice targetDevice;
+
+    public GameObject controller;
+    public GameObject hand;
     private int counter=0;
 
     public bool fixX;
@@ -43,39 +47,31 @@ public class Draggable : MonoBehaviour
 
             if (targetDevice.TryGetFeatureValue(CommonUsages.triggerButton, out bool triggerButton))
             {
+                LineRenderer controllerRot = controller.GetComponent<LineRenderer>();
+                
                 if (triggerButton && counter == 0)
                 {
                     dragging = false;
-                    if (targetDevice.TryGetFeatureValue(CommonUsages.devicePosition, out Vector3 pos) &&
-                        targetDevice.TryGetFeatureValue(CommonUsages.deviceRotation, out Quaternion rot))
-                    {
-                        Vector3 dir = rot * Vector3.forward;
-                        Ray ray = new Ray(pos, dir);
+                    Ray ray = new Ray(controller.transform.position, controllerRot.GetPosition(1)-controllerRot.GetPosition(0));
 
-                        if (GetComponent<Collider>().Raycast(ray, out RaycastHit hit, Mathf.Infinity))
+                    if (GetComponent<Collider>().Raycast(ray, out RaycastHit hit, Mathf.Infinity))
+                        dragging = true;
+                    counter = 1;
 
-                            dragging = true;
-                        counter = 1;
-                    }
+
                 }
                 else if (triggerButton)
                 {
                     counter++;
-                    if (targetDevice.TryGetFeatureValue(CommonUsages.devicePosition, out Vector3 pos) &&
-                        targetDevice.TryGetFeatureValue(CommonUsages.deviceRotation, out Quaternion rot))
+                    
+                    Ray ray = new Ray(controller.transform.position, controllerRot.GetPosition(1) - controllerRot.GetPosition(0));
+                   
+                    if (GetComponent<Collider>().Raycast(ray, out RaycastHit hit, Mathf.Infinity))
                     {
-                        Vector3 dir = rot * Vector3.forward;
-                        Ray ray = new Ray(pos, dir);
-
-                        if (GetComponent<Collider>().Raycast(ray, out RaycastHit hit, Mathf.Infinity))
-                        {
-                            var point = hit.point;
-                            point = GetComponent<Collider>().ClosestPointOnBounds(point);
-                            SetThumbPosition(point);
-                            SendMessage("OnDrag", Vector3.one - (thumb.position - GetComponent<Collider>().bounds.min) / GetComponent<Collider>().bounds.size.x);
-
-                        }
-
+                        var point = hit.point;
+                        point = GetComponent<Collider>().ClosestPointOnBounds(point);
+                        SetThumbPosition(point);
+                        SendMessage("OnDrag", Vector3.one - (thumb.position - GetComponent<Collider>().bounds.min) / GetComponent<Collider>().bounds.size.x);
 
                     }
                 }
