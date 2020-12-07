@@ -4,9 +4,15 @@ using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using TMPro;
+
 public class LoadSystem : MonoBehaviour
 {
     public Material material;
+    public TMP_InputField nameField;
+    public TMP_InputField journalField;
+    private Flower flower;
     private void Start()
     {
         int flwNum = getFlowerNum();
@@ -20,8 +26,36 @@ public class LoadSystem : MonoBehaviour
                 
             }
         }
+
+        flower = GameObject.Find("test1").GetComponent<Flower>() ;
+        journalField.text = flower.getText();
+        nameField.text = flower.getUserName();
+        nameField.interactable = false;
+        journalField.interactable = false;
     }
 
+    public void switchFocusFlower(Flower newF)
+    {
+        flower = newF;
+        journalField.text = flower.getText();
+        nameField.text = flower.getUserName();
+        nameField.interactable = false;
+        journalField.interactable = false;
+    }
+
+    public void toggleInputFieldInteractable()
+    {
+        nameField.interactable = !nameField.interactable;
+        journalField.interactable = !journalField.interactable;
+    }
+    public void editName()
+    {
+        flower.flowerName = nameField.text;
+    }
+    public void editText()
+    {
+        flower.text = journalField.text;
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (!other.gameObject.GetComponent<Flower>())

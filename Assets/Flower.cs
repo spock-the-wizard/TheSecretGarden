@@ -5,10 +5,11 @@ using UnityEngine;
 public class Flower : MonoBehaviour
 {
     public string flowerName;
+    public string userName = "";
     public Time time;
     public List<GameObject> parts = new List<GameObject>();
     public Vector3 position;
-    public string text;
+    public string text = "";
     // Start is called before the first frame update
   
 
@@ -20,8 +21,21 @@ public class Flower : MonoBehaviour
         Flower flower = obj.AddComponent<Flower>();
         flower.flowerName = "test" + idx.ToString();
         flower.position = new Vector3(-7, 3,-19);
-        flower.text = "no Text yet";
 
         return obj;
+    }
+
+    public string getText()
+    {
+        if(text == null || text.Equals(""))
+            return "Click Edit to enter text";
+        return text;
+    }
+
+    public string getUserName()
+    {
+        if (userName == null || userName.Equals(""))
+            return "Anonymous Flower";
+        return userName;
     }
 }

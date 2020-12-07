@@ -7,6 +7,7 @@ public class FlowerData
 {
     [SerializeField]
     public string flowerName;
+    public string userName;
     [SerializeField]
     public int partCount;
     public float[] position;
@@ -17,6 +18,7 @@ public class FlowerData
     public FlowerData(Flower flower)
     {
         flowerName = flower.flowerName;
+        userName = flower.userName;
         partCount = flower.parts.Count;
         text = flower.text;
         position = new float[3] { flower.position[0], flower.position[1], flower.position[2] };
@@ -31,6 +33,7 @@ public class FlowerData
         obj.AddComponent<XRGrabInteractable>();
         Flower flower = obj.AddComponent<Flower>();
         flower.flowerName = flowerName;
+        flower.userName = userName;
         flower.position = new Vector3(position[0], position[1],position[2]);
         flower.text = text;
         for(int i=0;i<partCount;i++)

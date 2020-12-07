@@ -6,8 +6,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine.SceneManagement;
 public class SaveSystem: MonoBehaviour
 {
-   // public GameObject flowerObject;
-
+    // public GameObject flowerObject;
+    public DeleteSystem deleteSystem;
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log("trigger with save button!");
@@ -28,12 +28,13 @@ public class SaveSystem: MonoBehaviour
         }
         else
         {
-            saveFlowerPosition();
+            saveFlowerChanges();
+            deleteSystem.deleteFlowerFilesInBin();
             Debug.Log("All Flowers Saved!");
         }
     }
 
-    public void saveFlowerPosition()
+    public void saveFlowerChanges()
     {
         GameObject[] list = GameObject.FindGameObjectsWithTag("Flower");
         for (int i = 0; i < list.Length; i++)
