@@ -10,8 +10,8 @@ using TMPro;
 public class LoadSystem : MonoBehaviour
 {
     public Material material;
-    public TMP_InputField nameField;
-    public TMP_InputField journalField;
+    //public InputField nameField;
+    //public InputField journalField;
     private Flower flower;
     private void Start()
     {
@@ -28,42 +28,9 @@ public class LoadSystem : MonoBehaviour
         }
 
         flower = GameObject.Find("test1").GetComponent<Flower>() ;
-        journalField.text = flower.getText();
-        nameField.text = flower.getUserName();
-        nameField.interactable = false;
-        journalField.interactable = false;
+      
     }
-
-    public void switchFocusFlower(Flower newF)
-    {
-        flower = newF;
-        journalField.text = flower.getText();
-        nameField.text = flower.getUserName();
-        nameField.interactable = false;
-        journalField.interactable = false;
-    }
-
-    public void toggleInputFieldInteractable()
-    {
-        nameField.interactable = !nameField.interactable;
-        journalField.interactable = !journalField.interactable;
-    }
-    public void editName()
-    {
-        flower.flowerName = nameField.text;
-    }
-    public void editText()
-    {
-        flower.text = journalField.text;
-    }
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!other.gameObject.GetComponent<Flower>())
-        {
-            Debug.Log("Redirecting to Draw Room");
-            SceneManager.LoadScene("DrawScene");
-        }
-    }
+    
     public static GameObject LoadFlowerPart(string name, Material mat)
     {
         string path = Application.persistentDataPath + "/" + name + ".flwpt";

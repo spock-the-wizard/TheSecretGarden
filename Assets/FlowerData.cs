@@ -51,18 +51,18 @@ public class FlowerData
         {
             bounds.Encapsulate(flower.parts[i].GetComponent<FlowerPart>().ml.bounds);
         }
-        Vector3 lowest = new Vector3(0, bounds.center[1]- bounds.size[1], 0);
-        bounds.center -= lowest;
+        //Vector3 lowest = new Vector3(0, bounds.center[1]- bounds.size[1], 0);
+        //bounds.center -= lowest;
         for(int i=0;i<partCount;i++)
         {
-            flower.parts[i].transform.Translate(-lowest);
+            flower.parts[i].transform.Translate(-bounds.center);
         }
         boxC.size = bounds.size;
-        boxC.center = bounds.center;
-        obj.GetComponent<Rigidbody>().freezeRotation = true;
-        obj.GetComponent<Rigidbody>().useGravity = true;
-        obj.GetComponent<Rigidbody>().mass = 0.5f;
-
+        //boxC.center = bounds.center;
+        Rigidbody rigidBody = obj.GetComponent<Rigidbody>();
+        rigidBody.freezeRotation = true;
+        //rigidBody.useGravity = false;
+        rigidBody.mass = 2.0f;
         return flower;
     }
 

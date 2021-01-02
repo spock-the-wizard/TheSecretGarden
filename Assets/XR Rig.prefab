@@ -580,7 +580,7 @@ MonoBehaviour:
   material: {fileID: 0}
   ptr: {fileID: 8636606887984847819}
   pen: {fileID: 4112031441921725143}
-  drawMode: 1
+  slider: {fileID: 0}
 --- !u!1 &3709940039423092141
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.XR.Interaction.Toolkit;
+using Unity.XR;
 public class Flower : MonoBehaviour
 {
     public string flowerName;
@@ -10,8 +11,6 @@ public class Flower : MonoBehaviour
     public List<GameObject> parts = new List<GameObject>();
     public Vector3 position;
     public string text = "";
-    // Start is called before the first frame update
-  
 
     //create from scratch in draw mode
     public static GameObject createFlowerObject(int idx)
@@ -37,5 +36,15 @@ public class Flower : MonoBehaviour
         if (userName == null || userName.Equals(""))
             return "Anonymous Flower";
         return userName;
+    }
+
+    public void undoPart()
+    {
+        if (parts.Count != 0)
+        {
+            GameObject lastPart = parts[parts.Count - 1];
+            parts.RemoveAt(parts.Count - 1);
+            Destroy(lastPart);
+        }
     }
 }

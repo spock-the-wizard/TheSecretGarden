@@ -5,24 +5,37 @@ using UnityEngine;
 
 public class DeleteSystem : MonoBehaviour
 {
-    private List<string> flowersToDelete = new List<string>();
-    private void OnTriggerEnter(Collider other)
+    private List<Flower> flowersToDelete = new List<Flower>();
+    private void OnCollisionEnter(Collision collision)
     {
         Debug.Log("trigger with the trashbin");
 
-        if (other.gameObject.GetComponent<Flower>() != null)
+        if (collision.gameObject.GetComponent<Flower>() != null)
         {
-            flowersToDelete.Add(other.GetComponent<Flower>().flowerName);
+            flowersToDelete.Add(collision.gameObject.GetComponent<Flower>());
 
-            Destroy(other.gameObject);
+            //Destroy(collision.gameObject);
+            collision.gameObject.SetActive(false);
         }
     }
+    
+    public void undoDelete()
+    {
+        if (flowersToDelete.Count == 0)
+        {
+            return;
+        }
+        Flower recentFlower = flowersToDelete[flowersToDelete.Count - 1];
+        recentFlower.gameObject.transform.position = new Vector3(-9.0f, 3.0f, -19.0f);
+        recentFlower.gameObject.SetActive(true);
+        flowersToDelete.Remove(recentFlower);
 
+    }
     public void deleteFlowerFilesInBin()
     {
         for(int i = 0; i < flowersToDelete.Count; i++)
         {
-            string path = Application.persistentDataPath + "/" + flowersToDelete[i] + ".flw";
+            string path = Application.persistentDataPath + "/" + flowersToDelete[i].flowerName + ".flw";
             if (File.Exists(path))
                 File.Delete(path);
             else

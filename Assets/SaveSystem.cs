@@ -8,30 +8,20 @@ public class SaveSystem: MonoBehaviour
 {
     // public GameObject flowerObject;
     public DeleteSystem deleteSystem;
-    private void OnTriggerEnter(Collider other)
+    
+    public void saveNewFlower()
     {
-        Debug.Log("trigger with save button!");
-
-        if (SceneManager.GetActiveScene().name == "DrawScene")
+        GameObject obj = GameObject.Find("New Flower");
+        if (obj != null && obj.GetComponent<Flower>() != null)
         {
-            GameObject obj = GameObject.Find("New Flower");
-            if (obj != null && obj.GetComponent<Flower>() != null)
-            {
-                SaveFlower(obj.GetComponent<Flower>());
-            }
-            else
-            {
-                Debug.Log("Nothing to save, redirecting to Garden");
-            }
+            SaveFlower(obj.GetComponent<Flower>());
+        }
+    }
 
+    public void returnToGarden()
+    {
+        if(SceneManager.GetActiveScene().name=="DrawScene")
             SceneManager.LoadScene("GardenScene");
-        }
-        else
-        {
-            saveFlowerChanges();
-            deleteSystem.deleteFlowerFilesInBin();
-            Debug.Log("All Flowers Saved!");
-        }
     }
 
     public void saveFlowerChanges()
@@ -45,6 +35,8 @@ public class SaveSystem: MonoBehaviour
             Debug.Log(current.position);
             SaveFlower(current);
         }
+
+        deleteSystem.deleteFlowerFilesInBin();
     }
 
     public void SaveFlowerPart(FlowerPart flowerPart)
