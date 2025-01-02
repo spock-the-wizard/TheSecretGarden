@@ -1,8 +1,6 @@
 # TheSecretGarden
 
-Welcome to the Secret Garden!
-
-This is Jooeun Son's term project for CSED 402 (Human-Computer Interaction)  @ POSTECH 2020 Fall Semester
+Code for term project for HCI Course (CSED402,POSTECH).
 
 ## Project Description
 The Secret Garden is a VR Journal Application targeted for the Oculus Quest.
